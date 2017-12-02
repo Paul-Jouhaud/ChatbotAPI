@@ -43,4 +43,5 @@ $ python manage.py runserver
 - Create a Model Serializer
 - Create an APIView
 - Add the url
-
+- Create the DialogFlow Helper
+- Use the response in the view
