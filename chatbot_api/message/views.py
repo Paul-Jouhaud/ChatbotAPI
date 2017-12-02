@@ -3,6 +3,7 @@ from message.serializers import MessageSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from message.helpers.dialogflow import query_dialogflow
 
 class MessageView(APIView):
     def post(self, request, format=None):
@@ -11,7 +12,9 @@ class MessageView(APIView):
             serializer.save()
             
             # Get DialogFlow response
-
+            r = query_dialogflow(serializer.data.get('text'))            
+            json_response = r.json()
+            response = json_response.get("fulfillment", {}).get("speech", "Je n'ai pas compris...")              
             # Return DialogFlow answer
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({"speech_answer": response}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
