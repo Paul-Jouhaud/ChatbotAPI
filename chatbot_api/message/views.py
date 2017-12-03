@@ -10,11 +10,8 @@ class MessageView(APIView):
         serializer = MessageSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            
-            # Get DialogFlow response
             r = query_dialogflow(serializer.data.get('text'))            
             json_response = r.json()
-            response = json_response.get("fulfillment", {}).get("speech", "Je n'ai pas compris...")              
-            # Return DialogFlow answer
+            response = json_response.get('result', {}).get("fulfillment", {}).get("speech", "Je n'ai pas compris...")              
             return Response({"speech_answer": response}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
